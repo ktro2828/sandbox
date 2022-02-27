@@ -48,10 +48,13 @@ public:
     }
 
     template <int L>
-    MatrixNd<N, L> dot(const MatrixNd<M, L> &mat) {
-        for (int i=0; i<N; ++i) {
-            
+    MatrixNd<N, L> dot(const MatrixNd<M, L> &mat)
+    {
+        // TODO
+        for (int i = 0; i < N; ++i)
+        {
         }
+        return *this;
     }
 
     // overload
@@ -77,7 +80,7 @@ std::ostream &operator<<(std::ostream &os, const MatrixNd<N, M> &mat)
         {
             if (j != M - 1)
             {
-                os << mat[i][j] << ",";
+                os << mat[i][j] << ", ";
             }
             else
             {
@@ -86,11 +89,11 @@ std::ostream &operator<<(std::ostream &os, const MatrixNd<N, M> &mat)
         }
         if (i != N - 1)
         {
-            os << "), ";
+            os << ",\n ";
         }
         else
         {
-            os << "))";
+            os << ")";
         }
     }
     return os;

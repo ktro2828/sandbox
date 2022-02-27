@@ -8,66 +8,102 @@
 #include <iostream>
 #include <stdexcept>
 
-template <int N>
+template <class T, int N>
 class VectorNd
 {
 private:
-  std::array<double, N> data_;
+  std::array<T, N> data_;
 
 public:
   // Constrctor
-  VectorNd(std::array<double, N> v) : data_(v){};
-  VectorNd(std::initializer_list<double> v)
+  VectorNd() = default;
+  VectorNd(std::array<T, N> v) : data_(v) {}
+  VectorNd(std::initializer_list<T> v)
   {
     size_t dims = static_cast<size_t>(N);
     size_t n = std::min(dims, v.size());
     std::copy_n(v.begin(), n, data_.begin());
   }
 
-  double &operator[](const int i)
+  T &operator[](const int i)
   {
     assert(i >= 0 && i < N);
     return data_[i];
   }
-  double operator[](const int i) const
+  T operator[](const int i) const
   {
     assert(i >= 0 && i < N);
     return data_[i];
   }
 
-  double norm() const { return std::sqrt(*this * *this); }
-  VectorNd<N> getNormalized() const { return *this / norm(); }
-  VectorNd<N> &normalize()
+  double norm() const { return std::sqrt(this->dot(*this)); }
+
+  VectorNd<T, N> getNormalized() const { return *this / this->norm(); }
+  void normalize() { *this /= this->norm(); }
+
+  double getCos(const VectorNd<T, N> &v) const { return this->dot(v) / (this->norm() * v.norm()); }
+  double getAngle(const VectorNd<T, N> &v) const { return std::acos(this->getCos(v)); }
+
+  // VectorNd<T, N> getTransposed(const int[] &shape) const
+  // {
+  //   VectorNd<T, N> ret = {};
+  //   for (int i = 0; i < N; ++i)
+  //   {
+  //     ret[i] = *this[shape[i]];
+  //   }
+  //   return ret;
+  // }
+  // void transpose(int[] order);
+
+  bool all() const
   {
-    *this = *this / norm();
-    return *this;
+    for (int i = 0; i < N; ++i)
+    {
+      if (data_[i] == 0)
+      {
+        return false;
+      }
+    }
+    return true;
   }
 
-  double dot(const VectorNd<N>& v) const;
-  VectorNd<N> cross(const VectorNd<N>& v) const;
+  bool any() const
+  {
+    for (int i = 0; i < N; ++i)
+    {
+      if (data_[i] != 0)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 
-  // double getAngle(const VectorNd<N>& v) const;
-  // double getCos(const VectorNd<N>& v) const;
+  int ndim() const { return N; }
 
-  // VectorNd<N> getTransposed(int[] order) const;
-  // VectorNd<N>& transpose(int[] order);
+  double dot(const VectorNd<T, N> &v) const;
+  VectorNd<T, N> cross(const VectorNd<T, N> &v) const;
 
   // overload
-  VectorNd<N> &operator*=(const double &d);
-  VectorNd<N> &operator*=(const VectorNd<N> &v);
-  VectorNd<N> &operator+=(const double &d);
-  VectorNd<N> &operator+=(const VectorNd<N> &v);
-  VectorNd<N> &operator-=(const double &d);
-  VectorNd<N> &operator-=(const VectorNd<N> &v);
-  VectorNd<N> &operator/=(const double &d);
-  VectorNd<N> &operator/=(const VectorNd<N> &v);
+  VectorNd<T, N> &operator*=(const double &d);
+  VectorNd<T, N> &operator*=(const VectorNd<T, N> &v);
+  VectorNd<T, N> &operator+=(const double &d);
+  VectorNd<T, N> &operator+=(const VectorNd<T, N> &v);
+  VectorNd<T, N> &operator-=(const double &d);
+  VectorNd<T, N> &operator-=(const VectorNd<T, N> &v);
+  VectorNd<T, N> &operator/=(const double &d);
+  VectorNd<T, N> &operator/=(const VectorNd<T, N> &v);
 
 }; // class VectorNd
 
-template <int N>
-VectorNd<N> operator*(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
+typedef VectorNd<double, 1> Vector1d;
+typedef VectorNd<double, 2> Vector2d;
+typedef VectorNd<double, 3> Vector3d;
+
+template <class T, int N>
+VectorNd<T, N> operator*(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] *= rhs[i];
@@ -75,10 +111,10 @@ VectorNd<N> operator*(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator+(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator+(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] += rhs[i];
@@ -86,10 +122,10 @@ VectorNd<N> operator+(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator-(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator-(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] -= rhs[i];
@@ -97,10 +133,10 @@ VectorNd<N> operator-(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator/(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator/(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     if (rhs[i] == 0)
@@ -112,10 +148,10 @@ VectorNd<N> operator/(const VectorNd<N> &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator*(const double &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator*(const double &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = rhs;
+  VectorNd<T, N> ret = rhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] *= lhs;
@@ -123,10 +159,10 @@ VectorNd<N> operator*(const double &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator*(const VectorNd<N> &lhs, const double &rhs)
+template <class T, int N>
+VectorNd<T, N> operator*(const VectorNd<T, N> &lhs, const double &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] *= rhs;
@@ -134,10 +170,10 @@ VectorNd<N> operator*(const VectorNd<N> &lhs, const double &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator+(const double &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator+(const double &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = rhs;
+  VectorNd<T, N> ret = rhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] += lhs;
@@ -145,10 +181,10 @@ VectorNd<N> operator+(const double &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator+(const VectorNd<N> &lhs, const double &rhs)
+template <class T, int N>
+VectorNd<T, N> operator+(const VectorNd<T, N> &lhs, const double &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] += rhs;
@@ -156,10 +192,10 @@ VectorNd<N> operator+(const VectorNd<N> &lhs, const double &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator-(const double &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator-(const double &lhs, const VectorNd<T, N> &rhs)
 {
-  VectorNd<N> ret = rhs;
+  VectorNd<T, N> ret = rhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] -= lhs;
@@ -167,10 +203,10 @@ VectorNd<N> operator-(const double &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator-(const VectorNd<N> &lhs, const double &rhs)
+template <class T, int N>
+VectorNd<T, N> operator-(const VectorNd<T, N> &lhs, const double &rhs)
 {
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] -= rhs;
@@ -178,14 +214,14 @@ VectorNd<N> operator-(const VectorNd<N> &lhs, const double &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator/(const double &lhs, const VectorNd<N> &rhs)
+template <class T, int N>
+VectorNd<T, N> operator/(const double &lhs, const VectorNd<T, N> &rhs)
 {
   if (lhs == 0)
   {
     throw std::invalid_argument("zero division is invalid");
   }
-  VectorNd<N> ret = rhs;
+  VectorNd<T, N> ret = rhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] /= lhs;
@@ -193,14 +229,14 @@ VectorNd<N> operator/(const double &lhs, const VectorNd<N> &rhs)
   return ret;
 }
 
-template <int N>
-VectorNd<N> operator/(const VectorNd<N> &lhs, const double &rhs)
+template <class T, int N>
+VectorNd<T, N> operator/(const VectorNd<T, N> &lhs, const double &rhs)
 {
   if (rhs == 0)
   {
     throw std::invalid_argument("zero division is invalid");
   }
-  VectorNd<N> ret = lhs;
+  VectorNd<T, N> ret = lhs;
   for (int i = 0; i < N; ++i)
   {
     ret[i] /= rhs;
@@ -208,8 +244,63 @@ VectorNd<N> operator/(const VectorNd<N> &lhs, const double &rhs)
   return ret;
 }
 
-template <int N>
-std::ostream &operator<<(std::ostream &os, const VectorNd<N> &v)
+template <class T, int N>
+VectorNd<bool, N> operator==(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
+{
+  VectorNd<bool, N> ret;
+  for (int i = 0; i < N; ++i)
+  {
+    ret[i] = (lhs[i] == rhs[i]);
+  }
+  return ret;
+}
+
+template <class T, int N>
+VectorNd<bool, N> operator<(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
+{
+  VectorNd<bool, N> ret;
+  for (int i = 0; i < N; ++i)
+  {
+    ret[i] = (lhs[i] < rhs[i]);
+  }
+  return ret;
+}
+
+template <class T, int N>
+VectorNd<bool, N> operator<=(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
+{
+  VectorNd<bool, N> ret;
+  for (int i = 0; i < N; ++i)
+  {
+    ret[i] = (lhs[i] <= rhs[i]);
+  }
+  return ret;
+}
+
+template <class T, int N>
+VectorNd<bool, N> operator>(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
+{
+  VectorNd<bool, N> ret;
+  for (int i = 0; i < N; ++i)
+  {
+    ret[i] = (lhs[i] > rhs[i]);
+  }
+  return ret;
+}
+
+template <class T, int N>
+VectorNd<bool, N> operator>=(const VectorNd<T, N> &lhs, const VectorNd<T, N> &rhs)
+{
+  VectorNd<bool, N> ret;
+  for (int i = 0; i < N; ++i)
+  {
+    ret[i] = (lhs[i] >= rhs[i]);
+  }
+  return ret;
+}
+
+template <class T, int N>
+std::ostream &operator<<(std::ostream &os, const VectorNd<T, N> &v)
 {
   os << "(";
   for (int i = 0; i < N; ++i)
@@ -225,9 +316,5 @@ std::ostream &operator<<(std::ostream &os, const VectorNd<N> &v)
   }
   return os;
 }
-
-typedef VectorNd<1> Vector1d;
-typedef VectorNd<2> Vector2d;
-typedef VectorNd<3> Vector3d;
 
 #endif // VECTOR_H_

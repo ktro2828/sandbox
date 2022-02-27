@@ -3,56 +3,56 @@
 #include "vector.hpp"
 
 // operator overload
-template <int N>
-VectorNd<N> &VectorNd<N>::operator*=(const double &d)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator*=(const double &d)
 {
   for (int i = 0; i < N; ++i)
     data_[i] *= d;
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator*=(const VectorNd<N> &v)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator*=(const VectorNd<T, N> &v)
 {
   for (int i = 0; i < N; ++i)
     data_[i] *= v[i];
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator+=(const double &d)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator+=(const double &d)
 {
   for (int i = 0; i < N; ++i)
     data_[i] += d;
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator+=(const VectorNd<N> &v)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator+=(const VectorNd<T, N> &v)
 {
   for (int i = 0; i < N; ++i)
     data_[i] += v[i];
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator-=(const double &d)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator-=(const double &d)
 {
   for (int i = 0; i < N; ++i)
     data_[i] -= d;
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator-=(const VectorNd<N> &v)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator-=(const VectorNd<T, N> &v)
 {
   for (int i = 0; i < N; ++i)
     data_[i] -= v[i];
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator/=(const double &d)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator/=(const double &d)
 {
   if (d == 0)
   {
@@ -63,8 +63,8 @@ VectorNd<N> &VectorNd<N>::operator/=(const double &d)
   return *this;
 }
 
-template <int N>
-VectorNd<N> &VectorNd<N>::operator/=(const VectorNd<N> &v)
+template <class T, int N>
+VectorNd<T, N> &VectorNd<T, N>::operator/=(const VectorNd<T, N> &v)
 {
   for (int i = 0; i < N; ++i)
   {
@@ -78,8 +78,8 @@ VectorNd<N> &VectorNd<N>::operator/=(const VectorNd<N> &v)
 }
 
 // member functions
-template <int N>
-double VectorNd<N>::dot(const VectorNd<N> &v) const
+template <class T, int N>
+double VectorNd<T, N>::dot(const VectorNd<T, N> &v) const
 {
   double ret = 0;
   for (int i = 0; i < N; ++i)
@@ -89,17 +89,18 @@ double VectorNd<N>::dot(const VectorNd<N> &v) const
   return ret;
 }
 
-template <int N>
-VectorNd<N> VectorNd<N>::cross(const VectorNd<N>& v) const {
-  if (N != 3) {
+template <class T, int N>
+VectorNd<T, N> VectorNd<T, N>::cross(const VectorNd<T, N> &v) const
+{
+  if (N != 3)
+  {
     throw std::invalid_argument("cross must be computed for 3-dim vector");
   }
 
-  VectorNd<3> ret = {
-    data_[1] * v[2] - data_[2] * v[1],
-    data_[2] * v[0] - data_[0] * v[2],
-    data_[0] * v[1] - data_[1] * v[0]
-  };
+  VectorNd<T, 3> ret = {
+      data_[1] * v[2] - data_[2] * v[1],
+      data_[2] * v[0] - data_[0] * v[2],
+      data_[0] * v[1] - data_[1] * v[0]};
 
   return ret;
 }
