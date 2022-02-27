@@ -13,6 +13,10 @@ private:
     std::vector<Vector3d> vertices_;
     std::vector<Vector2d> textures_;
     std::vector<Vector3d> normals_;
+    // per-triangle indices in the above arrays
+    std::vector<int> vertex_indices_;
+    std::vector<int> texture_indices_;
+    std::vector<int> normal_indices_;
     TGAImage diffuseMap_;
     TGAImage normalMap_;
     TGAImage specularMap_;
