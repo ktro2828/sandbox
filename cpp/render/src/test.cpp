@@ -92,4 +92,8 @@ int main()
   cout << "m1.dot(m2) = " << m3 << endl;
   m3 = dot(m1, m2);
   cout << "dot(m1, m2) = " << m3 << endl;
+
+  MatrixNd<3, 3> e;
+  eye(e);
+  cout << "eye = " << e << endl;
 }
