@@ -75,9 +75,21 @@ int main()
   MatrixNd<2, 2> m2 = {{2, 2}, {1, 1}};
 
   m1 += m2;
-  cout << "m1+=m2 = \n"
+  cout << "m 1+= m2 = \n"
        << m1 << endl;
   m1 -= m2;
+  cout << "m1 -= m2 = \n"
+       << m1 << endl;
   m1 *= m2;
+  cout << "m1 *= m2 = \n"
+       << m1 << endl;
   m1 /= m2;
+  cout << "m1 /= m2 = \n"
+       << m1 << endl;
+
+  MatrixNd<2, 2> m3 = {};
+  m3 = m1.dot(m2);
+  cout << "m1.dot(m2) = " << m3 << endl;
+  m3 = dot(m1, m2);
+  cout << "dot(m1, m2) = " << m3 << endl;
 }

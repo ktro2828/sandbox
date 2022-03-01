@@ -51,10 +51,18 @@ public:
     MatrixNd<N, L> dot(const MatrixNd<M, L> &mat)
     {
         // TODO
+      MatrixNd<N, L> ret = {};
         for (int i = 0; i < N; ++i)
         {
+	  for (int j=0; j < L; ++j)
+	    {
+	      for (int k=0; k < M; ++k)
+		{
+		  ret[i][j] += data_[i][k] * mat[k][j];
+		}
+	    }
         }
-        return *this;
+        return ret;
     }
 
     // overload
@@ -68,6 +76,37 @@ public:
     MatrixNd<N, M> &operator/=(const MatrixNd<N, M> &mat);
 
 }; // class MatrixNd
+
+template<int N, int M, int L>
+MatrixNd<N, L> dot(const MatrixNd<N, M> &mat1, const MatrixNd<M, L> &mat2)
+{
+  MatrixNd<N, L> ret = {};
+  for (int i = 0; i < N; ++i)
+    {
+      for (int j = 0; j < L; ++j)
+	{
+	  for (int k = 0; k < M; ++k)
+	    {
+	      ret[i][j] += mat1[i][k] * mat2[k][j];
+	    }
+	}
+    }
+  return ret;
+}
+
+template<int N>
+MatrixNd<N, N> eye()
+{
+  MatrixNd<N, N> ret;
+  for (int i=0; i<N; ++i)
+    {
+      for (int j=0; j<N; ++j)
+	{
+	  ret[i][j] = (i==j) ? 1 : 0;
+	}
+    }
+  return ret;
+}
 
 template <int N, int M>
 std::ostream &operator<<(std::ostream &os, const MatrixNd<N, M> &mat)
