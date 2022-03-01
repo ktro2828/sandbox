@@ -4,8 +4,10 @@
 #include <vector>
 #include <string>
 
-#include "vector.hpp"
+#include "geometry/vector.hpp"
 #include "tga.h"
+
+using namespace geometry;
 
 class Model
 {

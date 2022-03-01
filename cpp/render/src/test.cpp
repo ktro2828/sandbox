@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include "vector.cpp"
-#include "matrix.cpp"
+#include "geometry/vector.cpp"
+#include "geometry/matrix.cpp"
 
 using namespace std;
+using namespace geometry;
 
 int main()
 {
