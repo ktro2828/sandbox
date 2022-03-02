@@ -318,5 +318,27 @@ namespace geometry
     }
     return os;
   }
+
+  template <class T, int N, int M>
+  VectorNd<T, N> embed(const VectorNd<T, M> &v, T fill)
+  {
+    VectorNd<T, N> ret;
+    for (int i = 0; i < N; ++i)
+    {
+      ret[i] = (i < M ? v[i] : fill);
+    }
+    return ret;
+  }
+
+  template <class T, int N, int M>
+  VectorNd<T, N> proj(const VectorNd<T, M> &v)
+  {
+    VectorNd<T, N> ret;
+    for (int i = 0; i < N; ++i)
+    {
+      ret[i] = v[i];
+    }
+    return ret;
+  }
 } // namespace geoemtry
 #endif // VECTOR_H_

@@ -67,6 +67,41 @@ namespace geometry
       return ret;
     }
 
+    MatrixNd<M, N> transpose() const
+    {
+      MatrixNd<M, N> ret;
+      for (int i = 0; i < M; ++i)
+      {
+        for (int j = 0; j < N; ++j)
+        {
+          ret[i][j] = data_[j][i];
+        }
+      }
+      return ret;
+    }
+
+    // TODO
+    // double cofactor(const int row, const int col) const
+    // {
+    //   return getMinor(row, col).det() * ((row + col) % 2 ? -1 : 1);
+    // }
+
+    // MatrixNd<N - 1, M - 1> getMinor(const int row, const int col) const {
+    //   MatrixNd<N-1, M - 1> ret;
+    //   for (int i=0; i<N-1; ++i)
+    //   {
+    //     for (int j=0; j<M-1; ++j)
+    //     {
+    //       ret[i][j] = cofactor(i, j);
+    //     }
+    //   }
+    //   return ret;
+    // }
+
+    // double det() const {
+    //   return det_(*this);
+    // }
+
     // overload
     MatrixNd<N, M> &operator*=(const double &d);
     MatrixNd<N, M> &operator*=(const MatrixNd<N, M> &mat);
@@ -96,17 +131,63 @@ namespace geometry
     return ret;
   }
 
+  // template <int N>
+  // static double det(const MatrixNd<N, N> &m)
+  // {
+  //   double ret = 0;
+  //   for (int i = 0; i < N; ++i)
+  //   {
+  //     ret += m[0][i] * m.cofactor(0, i);
+  //   }
+  //   return ret;
+  // }
+
   template <int N>
-  void eye(MatrixNd<N, N> &dst)
+  MatrixNd<N, N> eye()
   {
+    MatrixNd<N, N> ret;
     for (int i = 0; i < N; ++i)
     {
       for (int j = 0; j < N; ++j)
       {
-        dst[i][j] = (i == j) ? 1 : 0;
+        ret[i][j] = (i == j) ? 1 : 0;
       }
     }
-    return;
+    return ret;
+  }
+
+  template <int N, int M>
+  MatrixNd<N, M> ones()
+  {
+    MatrixNd<N, M> ret;
+    for (int i = 0; i < N; ++i)
+    {
+      for (int j = 0; j < N; ++j)
+      {
+        ret[i][j] = 1;
+      }
+    }
+    return ret;
+  }
+
+  template <int N, int M>
+  MatrixNd<N, M> zeros()
+  {
+    return MatrixNd<N, M>();
+  }
+
+  template <int N, int M>
+  MatrixNd<M, N> transpose(const MatrixNd<N, M> &mat)
+  {
+    MatrixNd<M, N> ret;
+      for (int i = 0; i < M; ++i)
+      {
+        for (int j = 0; j < N; ++j)
+        {
+          ret[i][j] = mat[j][i];
+        }
+      }
+      return ret;
   }
 
   template <int N, int M>
