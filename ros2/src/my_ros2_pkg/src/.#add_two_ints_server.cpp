@@ -1,1 +1,0 @@
-ktro2828@ktro2828-ThinkPad-X1-Extreme-2nd.23635:1646295656
