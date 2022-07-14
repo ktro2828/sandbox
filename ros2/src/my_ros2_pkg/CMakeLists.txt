@@ -9,6 +9,8 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -23,17 +25,23 @@ add_executable(talker src/publisher_member_function.cpp)
 ament_target_dependencies(talker rclcpp std_msgs)
 add_executable(listener src/subscriber_member_function.cpp)
 ament_target_dependencies(listener rclcpp std_msgs)
+add_executable(grid_map_pub src/grid_map_publisher.cpp)
+ament_target_dependencies(grid_map_pub rclcpp nav_msgs)
+add_executable(double_subscriber src/double_subscriber.cpp)
+ament_target_dependencies(double_subscriber sensor_msgs std_msgs)
 
 install(TARGETS
   my_node
   talker
   listener
+  grid_map_pub
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   find_package(rclcpp REQUIRED)
   find_package(std_msgs REQUIRED)
+  find_package(nav_msgs REQUIRED)
   # the following line skips the linter which checks for copyrights
   # uncomment the line when a copyright and license is not present in all source files
   #set(ament_cmake_copyright_FOUND TRUE)

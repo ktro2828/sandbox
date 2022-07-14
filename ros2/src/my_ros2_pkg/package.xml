@@ -11,6 +11,8 @@
 
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
   <exec_depend>rclpy</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
@@ -24,6 +26,7 @@
   'console_scripts': [
   'pytalker = my_ros2_pkg.node_scripts.publisher_member_function:main',
   'pylistener = my_ros2_pkg.node_scripts.subscriber_member_function:main',
+  'pygridmap' = 'my_ros2_pkg.node_scripts.grid_map_publisher:main',
   ],
   }
 </package>
