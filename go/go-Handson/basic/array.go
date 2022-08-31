@@ -1,5 +1,15 @@
 package main
 
+/**
+  配列の宣言
+  var x [10]int
+
+  宣言 + 初期化
+  var x = [3]int{1, 2, 3}
+  x := [3]int{1, 2, 3}
+ */
+
+
 import "fmt"
 
 func main() {
