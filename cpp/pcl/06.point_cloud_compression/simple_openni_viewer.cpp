@@ -1,0 +1,1 @@
+#include "simple_openni_viewer.h"
