@@ -1,0 +1,3 @@
+[submodule "cpp/spline/matplotlib-cpp-starter"]
+	path = cpp/spline/matplotlib-cpp-starter
+	url = https://github.com/AtsushiSakai/matplotlib-cpp-starter.git
