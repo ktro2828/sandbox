@@ -28,6 +28,7 @@ type NData struct {
 func (nd *NData) Set(nm string, g General) GData {
 	nd.Name = nm
 	if reflect.TypeOf(g).Kind() == reflect.Int {
+        // Generalの型がintかチェック
 		nd.Data = g.(int)
 	}
 	return nd
@@ -51,6 +52,7 @@ type SData struct {
 func (sd *SData) Set(nm string, g General) GData {
 	sd.Name = nm
 	if reflect.TypeOf(g).Kind() == reflect.String {
+        // Generalの型がstringかチェック
 		sd.Data = g.(string)
 	}
 	return sd
