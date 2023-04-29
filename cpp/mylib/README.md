@@ -1,19 +1,36 @@
-# 「江添亮のC++入門」
-Github: https://ezoeryou.github.io/cpp-intro/
-Web: https://cpp.rainy.me/
+# mylib
 
-## GCC: C++コンパイラー
+## `mylib::vector`
 
-- `-std`: C++の規格選択オプション．
-- `-Wall`: コンパイラの警告メッセージのほぼすべてを有効にするオプション．
-- `--pedantic-errors`: C++の規格を厳格に守るオプション．規格違反コードはコンパイルエラー．
-
-```shell
-g++ -std=c++17 -Wall --pedanric-errors -o OUTPUT SOUCE.cpp
+```cpp
+namespace mylib {
+    template<typename T, typename Allocator = allocator<T>>
+    class vector;
+}
 ```
 
-- GCCマニュアル参照方法
+### Member functions
+| Name         | Description |
+| :----------- | :---------- |
+| `begin`      | WIP         |
+| `end`        | WIP         |
+| `size`       | WIP         |
+| `resize`     | WIP         |
+| `operator[]` | WIP         |
+| `at`         | WIP         |
+| `push_back`  | WIP         |
 
-```shell
-man gcc
+## `mylib::allocator`
+
+```cpp
+namespace mylib {
+    template<class T>
+    class allocator;
+}
 ```
+
+### Member functions
+| Name         | Description |
+| :----------- | :---------- |
+| `allocate`   | WIP         |
+| `deallocate` | WIP         |
