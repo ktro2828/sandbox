@@ -2,6 +2,7 @@
 #define MYLIB_VECTOR_HPP_
 
 #include <cstddef>
+#include <iostream>
 #include <iterator>
 #include <memory>
 #include <stdexcept>
@@ -27,7 +28,7 @@ public:
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
-  pointer arr_;
+  pointer arr_ = nullptr;
   size_type length_ = 0, capacity_ = 1;
   allocator_type alloc_;
 
@@ -126,7 +127,7 @@ public:
     if (sz < size()) {
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
-    } else if (sz > size()) {
+    } else if (size() < sz) {
       for (auto iter = begin(); iter != end(); ++iter) {
         construct(iter);
       }
@@ -140,7 +141,7 @@ public:
     if (sz < size()) {
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
-    } else if (sz > size()) {
+    } else if (size() < sz) {
       for (auto iter = begin(); iter != end(); ++iter) {
         construct(iter, value);
       }
@@ -150,11 +151,33 @@ public:
 
   void reserve(size_type sz)
   {
-    if (capacity() < sz) {
-      while (capacity_ < sz) {
-        capacity_ *= 2;
-      }
-      arr_ = allocate(sz);
+    if (sz <= capacity()) {
+      return;
+    }
+
+    // allocate new memory
+    pointer ptr = allocate(sz);
+
+    // store old information
+    pointer old_first = arr_;
+    pointer old_last = arr_ + size();
+    size_type old_capacity = capacity();
+
+    // update to new one
+    for (auto old_iter = old_first, new_iter = ptr; old_iter != old_last; ++old_iter, ++new_iter) {
+      construct(new_iter, std::move(*old_iter));
+    }
+    arr_ = ptr;
+    capacity_ = sz;
+
+    // destroy old one
+    for (auto riter = reverse_iterator(old_last), rend = reverse_iterator(old_first); riter != rend;
+         ++riter) {
+      destroy(&*riter);
+    }
+
+    if (!old_first) {
+      traits::deallocate(alloc_, old_first, old_capacity);
     }
   }
 
@@ -177,10 +200,6 @@ public:
     return arr_[n];
   }
 
-  /**
-     @brief Returns the pointer that points to the first element
-     @reference
-   */
   reference front() { return arr_; }
   reference back() { return arr_ + length_; }
   pointer data() { return arr_; }
@@ -196,7 +215,7 @@ public:
     ++length_;
   }
 
-  void push_back(const value_type value) { emplace_back(value); }
+  void push_back(const_reference value) { emplace_back(value); }
 
   void clear() { destroy_until(rend()); }
 

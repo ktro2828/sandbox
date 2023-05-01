@@ -41,9 +41,9 @@ namespace mylib {
 #### Construct/Deconstruct
 | Name            | Description         | Implementation     |
 |:----------------|:--------------------|:------------------:|
-| `(constructor)` | Constructor         | :white_check_mark: |
+| `(constructor)` | Constructor         | :heavy_check_mark: |
 | `(destructor)`  | Destructor          | :heavy_check_mark: |
-| `operator=`     | Assignment operator | :white_check_mark: |
+| `operator=`     | Assignment operator | :heavy_check_mark: |
 
 #### Iterator
 
@@ -65,8 +65,8 @@ namespace mylib {
 | `size`          | Returns the number of elements                                                         | :heavy_check_mark: |
 | `capacity`      | Returns the number of maximum elements that can be stored without re-allocating memory | :heavy_check_mark: |
 | `empty`         | Whether container is empty                                                             | :heavy_check_mark: |
-| `resize`        | Resize the number of elemets                                                           | :white_check_mark: |
-| `reserve`       | Update capacity                                                                        | :white_check_mark: |
+| `resize`        | Resize the number of elemets                                                           | :heavy_check_mark: |
+| `reserve`       | Update capacity                                                                        | :heavy_check_mark: |
 | `shrink_to_fit` | Shrink capacity to the size                                                            | :x:                |
 
 #### Access to the element
@@ -83,7 +83,7 @@ namespace mylib {
 
 | Name           | Description                        | Implementation     |
 |:---------------|:-----------------------------------|:------------------:|
-| `push_back`    | Add an element to the last         | :white_check_mark: |
+| `push_back`    | Add an element to the last         | :heavy_check_mark: |
 | `emplace_back` | Create object to the last directly | :white_check_mark: |
 | `clear`        | Clear all elements                 | :heavy_check_mark: |
 
