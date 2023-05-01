@@ -33,9 +33,9 @@ private:
 
   // === Validation ===
   static_assert(
-    std::is_same<T, typename Alloc::value_type>::value,
+    std::is_same<value_type, typename Alloc::value_type>::value,
     "The allocator value must be matched the vector value type.");
-  static_assert(!std::is_const<T>::value, "Const elements are forbidden.");
+  static_assert(!std::is_const<value_type>::value, "Const elements are forbidden.");
 
   // === Helper functions ===
   pointer allocate(size_type n) { return traits::allocate(alloc_, n); }
