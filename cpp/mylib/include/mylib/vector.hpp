@@ -28,9 +28,8 @@ public:
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
-  pointer first_;
-  pointer last_;
-  pointer reserved_last_;
+  pointer arr_;
+  size_type length_ = 0, capacity_ = 1;
   allocator_type alloc_;
 
   // === Validation ===
@@ -41,7 +40,7 @@ private:
 
   // === Helper functions ===
   pointer allocate(size_type n) { return traits::allocate(alloc_, n); }
-  void deallocate() { traits::deallocate(alloc_, first_, capacity()); }
+  void deallocate() { traits::deallocate(alloc_, arr_, capacity()); }
   void construct(pointer ptr) { traits::construct(alloc_, ptr); }
   void construct(pointer ptr, const_reference value) { traits::construct(alloc_, ptr, value); }
   void construct(pointer ptr, value_type && value)
@@ -51,7 +50,7 @@ private:
   void destroy(pointer ptr) { traits::destroy(alloc_, ptr); }
   void destroy_until(reverse_iterator rend)
   {
-    for (auto riter = rbegin(); riter != rend; ++riter, --last_) {
+    for (auto riter = rbegin(); riter != rend; ++riter) {
       destroy(&*riter);
     }
   }
@@ -62,14 +61,14 @@ public:
 
   vector() : vector(allocator_type()) {}
 
-  explicit vector(size_type n, const allocator_type & alloc = allocator_type()) : alloc_(alloc)
+  explicit vector(size_type n, const allocator_type & alloc = allocator_type()) : vector(alloc)
   {
     resize(n);
   }
 
   explicit vector(
     size_type n, const_reference value, const allocator_type & alloc = allocator_type())
-  : alloc_(alloc)
+  : vector(alloc)
   {
     resize(n, value);
   }
@@ -87,9 +86,9 @@ public:
     clear();
     deallocate();
     resize(v.size());
-    first_ = allocate(capacity());
+    arr_ = allocate(capacity());
     for (size_type i = 0; i < size(); ++i) {
-      construct(first_ + i, *(v.first_ + i));
+      construct(begin() + i, *(v.begin() + i));
     }
   }
 
@@ -102,106 +101,85 @@ public:
   }
 
   // === Iterator ===
-  iterator begin() noexcept { return first_; }
-  const_iterator begin() const noexcept { return first_; }
-  const_iterator cbegin() const noexcept { return first_; }
-  reverse_iterator rbegin() noexcept { return reverse_iterator(last_); }
-  const_iterator crbegin() const noexcept { return const_reverse_iterator(last_); }
-  iterator end() noexcept { return last_; }
-  const_iterator end() const noexcept { return last_; }
-  const_iterator cend() const noexcept { return last_; }
-  reverse_iterator rend() noexcept { return reverse_iterator(first_); }
-  const_reverse_iterator rend() const noexcept { return const_reverse_iterator(first_); }
-  const_reverse_iterator crend() const noexcept { return const_reverse_iterator(first_); }
+  iterator begin() noexcept { return arr_; }
+  const_iterator begin() const noexcept { return arr_; }
+  const_iterator cbegin() const noexcept { return arr_; }
+  reverse_iterator rbegin() noexcept { return reverse_iterator(arr_ + size()); }
+  const_iterator crbegin() const noexcept { return const_reverse_iterator(arr_ + size()); }
+  iterator end() noexcept { return arr_ + size(); }
+  const_iterator end() const noexcept { return arr_ + size(); }
+  const_iterator cend() const noexcept { return arr_ + size(); }
+  reverse_iterator rend() noexcept { return reverse_iterator(arr_); }
+  const_reverse_iterator rend() const noexcept { return const_reverse_iterator(arr_); }
+  const_reverse_iterator crend() const noexcept { return const_reverse_iterator(arr_); }
 
   // === Size ===
-  size_type capacity() const noexcept { return reserved_last_ - first_; }
-  size_type size() const { return end() - begin(); }
+  size_type capacity() const noexcept { return capacity_; }
+  size_type size() const { return length_; }
   bool empty() const { return begin() == end(); }
-
-  void reserve(size_type sz)
-  {
-    if (sz <= capacity()) {
-      return;
-    }
-    auto ptr = allocate(sz);
-
-    auto old_first = first_;
-    auto old_last = last_;
-    auto old_capacity = capacity();
-
-    first_ = ptr;
-    last_ = first_;
-    reserved_last_ = first_ + sz;
-
-    for (auto old_iter = old_first; old_iter != old_last; ++old_iter, ++last_) {
-      construct(last_, std::move(*old_iter));
-    }
-
-    for (auto riter = reverse_iterator(old_last), rend = reverse_iterator(old_first); riter != rend;
-         ++riter) {
-      destroy(&*riter);
-    }
-
-    traits::deallocate(alloc_, old_first, old_capacity);
-  }
 
   void resize(size_type sz)
   {
+    reserve(sz);
     if (sz < size()) {
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
-      last_ = first_ + sz;
+      length_ = sz;
     } else if (sz > size()) {
-      reserve(sz);
-      for (; last_ != reserved_last_; ++last_) {
-        construct(last_);
+      for (auto iter = begin(); iter != end(); ++iter) {
+        construct(iter);
       }
     }
+    length_ = sz;
   }
 
   void resize(size_type sz, const_reference value)
   {
+    reserve(sz);
     if (sz < size()) {
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
-      last_ = first_ + sz;
     } else if (sz > size()) {
-      reserve(sz);
-      for (; last_ != reserved_last_; ++last_) {
-        construct(last_, value);
+      for (auto iter = begin(); iter != end(); ++iter) {
+        construct(iter, value);
       }
+    }
+    length_ = sz;
+  }
+
+  void reserve(size_type sz)
+  {
+    if (capacity() < sz) {
+      while (capacity_ < sz) {
+        capacity_ *= 2;
+      }
+      arr_ = allocate(sz);
     }
   }
 
   // === Access to the elements ===
-  reference operator[](const size_type i) { return first_[i]; }
-  reference at(const size_type i)
+  reference operator[](const size_type i) const { return arr_[i]; }
+  reference at(const size_type i) const
   {
     if (i >= size()) {
-      throw std::out_of_range("Index %d is out of range.", i);
+      throw std::out_of_range("Index %d is out of range.");
     }
-    return first_[i];
+    return arr_[i];
   }
-  reference front() { return first_; }
-  reference back() { return last_ - 1; }
-  pointer data() { return first_; }
+
+  reference front() { return arr_; }
+  reference back() { return arr_ + length_; }
+  pointer data() { return arr_; }
 
   // === Update container ===
   template <class... Args>
   void emplace_back(Args &&... args)
   {
-    if (size() + 1 > capacity()) {
-      size_type c = size();
-      if (c == 0) {
-        c = 1;
-      } else {
-        c *= 2;
-      }
-      reserve(c);
+    if (capacity() < size() + 1) {
+      reserve(size() + 1);
     }
-    construct(last_, std::forward<Args>(args)...);
-    ++last_;
+    construct(arr_ + size(), std::forward<Args>(args)...);
+    ++length_;
   }
 
   void push_back(const value_type value) { emplace_back(value); }

@@ -24,10 +24,14 @@ namespace mylib {
 
 #### Iterator
 
-| Name    | Description                                           | Implementation |
-|:--------|:------------------------------------------------------|:--------------:|
-| `begin` | Returns the iterator that points to the first element | []             |
-| `end`   | Returns the iterator that points to the last element  | []             |
+| Name     | Description                                                   | Implementation     |
+|:---------|:--------------------------------------------------------------|:------------------:|
+| `begin`  | Returns the iterator that points to the first element         | :heavy_check_mark: |
+| `end`    | Returns the iterator that points to the last element          | :heavy_check_mark: |
+| `cbegin` | Returns the const iterator that points to the first element   | :heavy_check_mark: |
+| `cend`   | Returns the const iterator that points to the last element    | :heavy_check_mark: |
+| `rbegin` | Returns the reverse iterator that points to the first element | :heavy_check_mark: |
+| `rend`   | Returns the reverse iterator that points to the last element  | :heavy_check_mark: |
 
 #### Size
 
