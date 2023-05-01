@@ -67,7 +67,7 @@ namespace mylib {
 | `empty`         | Whether container is empty                                                             | :heavy_check_mark: |
 | `resize`        | Resize the number of elemets                                                           | :heavy_check_mark: |
 | `reserve`       | Update capacity                                                                        | :heavy_check_mark: |
-| `shrink_to_fit` | Shrink capacity to the size                                                            | :x:                |
+| `shrink_to_fit` | Shrink capacity to fit to the number of elements                                       | :heavy_check_mark: |
 
 #### Access to the element
 
@@ -84,7 +84,7 @@ namespace mylib {
 | Name           | Description                        | Implementation     |
 |:---------------|:-----------------------------------|:------------------:|
 | `push_back`    | Add an element to the last         | :heavy_check_mark: |
-| `emplace_back` | Create object to the last directly | :white_check_mark: |
+| `emplace_back` | Create object to the last directly | :heavy_check_mark: |
 | `clear`        | Clear all elements                 | :heavy_check_mark: |
 
 ## `mylib::allocator`

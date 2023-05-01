@@ -197,6 +197,26 @@ public:
     }
   }
 
+  void shrink_to_fit()
+  {
+    if (size() == capacity()) {
+      return;
+    }
+
+    pointer ptr = allocate(size());
+    size_type current_type = size();
+    for (auto raw_ptr = ptr, iter = begin(), iter_end = end(); iter != iter_end();
+         ++raw_ptr, ++iter) {
+      construct(raw_ptr, *iter);
+    }
+
+    clear();
+    deallocate();
+
+    arr_ = ptr;
+    capacity_ = length_;
+  }
+
   // === Access to the elements ===
   reference operator[](const size_type n) { return arr_[n]; }
   const_reference operator[](const size_type n) const { return arr_[n]; }
