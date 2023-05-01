@@ -106,7 +106,10 @@ namespace mylib {
 | `const_pointer` | `const T*`    |
 
 ### Member functions
-| Name         | Description       | Implementation     |
-|:-------------|:------------------|:------------------:|
-| `allocate`   | Allocate memory   | :heavy_check_mark: |
-| `deallocate` | Deallocate memory | :heavy_check_mark: |
+| Name            | Description         | Implementation     |
+|:----------------|:--------------------|:------------------:|
+| `(constructor)` | Constructor         | :heavy_check_mark: |
+| `(destructor)`  | Destructor          | :heavy_check_mark: |
+| `operator=`     | Assignment operator | :heavy_check_mark: |
+| `allocate`      | Allocate memory     | :heavy_check_mark: |
+| `deallocate`    | Free memory         | :heavy_check_mark: |

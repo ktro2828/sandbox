@@ -1,6 +1,7 @@
 #include "allocator.hpp"
 #include "vector.hpp"
 
+#include <algorithm>
 #include <iostream>
 
 template <typename T, class Alloc>
@@ -32,6 +33,10 @@ int main()
   for (int i = 0; i < 10; ++i) {
     v.emplace_back(i);
   }
+
+  mylib::vector<int>::iterator max_iter = std::max_element(v.begin(), v.end());
+  int max_value = *max_iter;
+  std::cout << "Max: " << max_value << std::endl;
 
   debug(v);
 
