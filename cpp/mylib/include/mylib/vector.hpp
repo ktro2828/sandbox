@@ -12,15 +12,14 @@ template <typename T, typename Alloc = std::allocator<T>>
 class vector
 {
 public:
-  using traits = std::allocator_traits<Alloc>;
+  using allocator_type = Alloc;
+  using traits = std::allocator_traits<allocator_type>;
   using value_type = T;
   using size_type = std::size_t;
   using pointer = typename traits::pointer;
   using const_pointer = typename traits::const_pointer;
   using reference = T &;
   using const_reference = const T &;
-  // allocator
-  using allocator_type = Alloc;
   // iterator
   using iterator = T *;
   using const_iterator = const T *;
@@ -103,20 +102,22 @@ public:
   // === Iterator ===
   iterator begin() noexcept { return arr_; }
   const_iterator begin() const noexcept { return arr_; }
-  const_iterator cbegin() const noexcept { return arr_; }
-  reverse_iterator rbegin() noexcept { return reverse_iterator(arr_ + size()); }
-  const_iterator crbegin() const noexcept { return const_reverse_iterator(arr_ + size()); }
   iterator end() noexcept { return arr_ + size(); }
   const_iterator end() const noexcept { return arr_ + size(); }
+
+  const_iterator cbegin() const noexcept { return arr_; }
   const_iterator cend() const noexcept { return arr_ + size(); }
+
+  reverse_iterator rbegin() noexcept { return reverse_iterator(arr_ + size()); }
   reverse_iterator rend() noexcept { return reverse_iterator(arr_); }
-  const_reverse_iterator rend() const noexcept { return const_reverse_iterator(arr_); }
+
+  const_iterator crbegin() const noexcept { return const_reverse_iterator(arr_ + size()); }
   const_reverse_iterator crend() const noexcept { return const_reverse_iterator(arr_); }
 
   // === Size ===
   size_type capacity() const noexcept { return capacity_; }
-  size_type size() const { return length_; }
-  bool empty() const { return begin() == end(); }
+  size_type size() const noexcept { return length_; }
+  bool empty() const noexcept { return begin() == end(); }
 
   void resize(size_type sz)
   {
@@ -158,15 +159,28 @@ public:
   }
 
   // === Access to the elements ===
-  reference operator[](const size_type i) const { return arr_[i]; }
-  reference at(const size_type i) const
+  reference operator[](const size_type n) { return arr_[n]; }
+  const_reference operator[](const size_type n) const { return arr_[n]; }
+
+  reference at(const size_type n)
   {
-    if (i >= size()) {
-      throw std::out_of_range("Index %d is out of range.");
+    if (n >= size()) {
+      throw std::out_of_range("Index is out of range.");
     }
-    return arr_[i];
+    return arr_[n];
+  }
+  const_reference at(const size_type n) const
+  {
+    if (n >= size()) {
+      throw std::out_of_range("Index is out of range.");
+    }
+    return arr_[n];
   }
 
+  /**
+     @brief Returns the pointer that points to the first element
+     @reference
+   */
   reference front() { return arr_; }
   reference back() { return arr_ + length_; }
   pointer data() { return arr_; }

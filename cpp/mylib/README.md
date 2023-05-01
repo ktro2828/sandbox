@@ -13,6 +13,23 @@ namespace mylib {
 }
 ```
 
+### Member types
+
+| Name                     | Description                                       |
+|:-------------------------|:--------------------------------------------------|
+| `allocator_type`         | `Alloc`                                           |
+| `traits`                 | `std::allocator_traits<allcator_type>`            |
+| `value_type`             | `T`                                               |
+| `size_type`              | `std::size_t`                                     |
+| `pointer`                | `typename traits::pointer` (aka `T*`)             |
+| `const_pointer`          | `typename traits::const_pointer` (aka `const T*`) |
+| `reference`              | `T &`                                             |
+| `const_reference`        | `const T&`                                        |
+| `itertor`                | `T *`                                             |
+| `const_iterator`         | `const T *`                                       |
+| `reverse_iterator`       | `std::reverse_iterator<iterator>`                 |
+| `const_reverse_iterator` | `std::reverse_itertor<const_iteartor>`            |
+
 ### Member functions
 
 #### Construct/Deconstruct
@@ -24,24 +41,27 @@ namespace mylib {
 
 #### Iterator
 
-| Name     | Description                                                   | Implementation     |
-|:---------|:--------------------------------------------------------------|:------------------:|
-| `begin`  | Returns the iterator that points to the first element         | :heavy_check_mark: |
-| `end`    | Returns the iterator that points to the last element          | :heavy_check_mark: |
-| `cbegin` | Returns the const iterator that points to the first element   | :heavy_check_mark: |
-| `cend`   | Returns the const iterator that points to the last element    | :heavy_check_mark: |
-| `rbegin` | Returns the reverse iterator that points to the first element | :heavy_check_mark: |
-| `rend`   | Returns the reverse iterator that points to the last element  | :heavy_check_mark: |
+| Name      | Description                                                         | Implementation     |
+|:----------|:--------------------------------------------------------------------|:------------------:|
+| `begin`   | Returns the iterator that points to the first element               | :heavy_check_mark: |
+| `end`     | Returns the iterator that points to the last element                | :heavy_check_mark: |
+| `cbegin`  | Returns the const iterator that points to the first element         | :heavy_check_mark: |
+| `cend`    | Returns the const iterator that points to the last element          | :heavy_check_mark: |
+| `rbegin`  | Returns the reverse iterator that points to the first element       | :heavy_check_mark: |
+| `rend`    | Returns the reverse iterator that points to the last element        | :heavy_check_mark: |
+| `crbegin` | Returns the const reverse iterator that points to the first element | :heavy_check_mark: |
+| `crend`   | Returns the const reveres iterator that points to the last element  | :heavy_check_mark: |
 
 #### Size
 
-| Name       | Description                                                                            | Implementation     |
-|:-----------|:---------------------------------------------------------------------------------------|:------------------:|
-| `size`     | Returns the number of elements                                                         | :heavy_check_mark: |
-| `resize`   | Resize the number of elemets                                                           | []                 |
-| `capacity` | Returns the number of maximum elements that can be stored without re-allocating memory | :heavy_check_mark: |
-| `empty`    | Whether container is empty                                                             | :heavy_check_mark: |
-| `reserve`  | Update capacity                                                                        | []                 |
+| Name            | Description                                                                            | Implementation     |
+|:----------------|:---------------------------------------------------------------------------------------|:------------------:|
+| `size`          | Returns the number of elements                                                         | :heavy_check_mark: |
+| `capacity`      | Returns the number of maximum elements that can be stored without re-allocating memory | :heavy_check_mark: |
+| `empty`         | Whether container is empty                                                             | :heavy_check_mark: |
+| `resize`        | Resize the number of elemets                                                           | []                 |
+| `reserve`       | Update capacity                                                                        | []                 |
+| `shrink_to_fit` | Shrink capacity to the size                                                            | []                   |
 
 #### Access to the element
 
