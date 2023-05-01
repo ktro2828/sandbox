@@ -45,6 +45,8 @@ namespace mylib {
 |:-------------|:-------------------------------------------------------|:------------------:|
 | `operator[]` | Access to the element                                  | :heavy_check_mark: |
 | `at`         | Access to the element                                  | :heavy_check_mark: |
+| `front`      | Returns the reference that points to the first element | :heavy_check_mark: |
+| `back`       | Returns the reference that points to the last element  | :heavy_check_mark: |
 | `data`       | Returns the reference that points to the first element | :heavy_check_mark: |
 
 #### Update container

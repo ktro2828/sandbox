@@ -1,31 +1,46 @@
 #ifndef MYLIB_VECTOR_HPP_
 #define MYLIB_VECTOR_HPP_
 
+#include <iterator>
 #include <memory>
+#include <stdexcept>
+
 namespace mylib
 {
 template <typename T, typename Alloc = std::allocator<T>>
 class vector
 {
+public:
+  using traits = std::allocator_traits<Alloc>;
+  using value_type = T;
+  using size_type = unsigned int;
+  using pointer = typename traits::pointer;
+  using const_pointer = typename traits::const_pointer;
+  using reference = T &;
+  using const_reference = const T &;
+  // allocator
+  using allocator_type = Alloc;
+  // iterator
+  using iterator = T*;
+  using const_iterator = const T*;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
 private:
+  pointer first_;
+  pointer last_;
+  pointer reserved_last_;
+  Alloc alloc_;
+
+  // === Validation ===
   static_assert(
     std::is_same<T, typename Alloc::value_type>::value,
     "The allocator value must be matched the vector value type.");
   static_assert(!std::is_const<T>::value, "Const elements are forbidden.");
 
-  using traits = std::allocator_traits<Alloc>;
-  using value_type = T;
-  using allocator_type = Alloc;
-  using size_type = unsigned int;
-  using difference_type = int;
-  using reference = T &;
-  using const_reference = const T &;
-  using pointer = typename traits::pointer;
-  using const_pointer = typename traits::const_pointer;
-
   // === Helper functions ===
   pointer allocate(size_type n) { return traits::allocate(alloc_, n); }
-  void deallocate() { traits::deallocate(alloc_, first_, capacity_); }
+  void deallocate() { traits::deallocate(alloc_, first_, capacity()); }
   void construct(pointer ptr) { traits::construct(alloc_, ptr); }
   void construct(pointer ptr, const_reference value) { traits::construct(alloc_, ptr, value); }
   void construct(pointer ptr, value_type && value)
@@ -33,11 +48,12 @@ private:
     traits::construct(alloc_, ptr, std::move(value));
   }
   void destroy(pointer ptr) { traits::destroy(alloc_, ptr); }
-
-private:
-  pointer first_ = nullptr, last_ = nullptr;
-  size_type size_ = 0, capacity_ = 1;
-  Alloc alloc_;
+  void destroy_until(reverse_iterator rend)
+  {
+    for (auto riter = rbegin(); riter != rend; ++riter, --last_) {
+      destroy(&*riter);
+    }
+  }
 
 public:
   // === Constructor ===
@@ -47,22 +63,14 @@ public:
 
   explicit vector(size_type n, const allocator_type & alloc = allocator_type()) : alloc_(alloc)
   {
-    while (capacity_ < n) {
-      capacity_ *= 2;
-    }
-    first_ = allocate(capacity_);
+    resize(n);
   }
 
   explicit vector(
     size_type n, const_reference value, const allocator_type & alloc = allocator_type())
   : alloc_(alloc)
   {
-    while (capacity_ < n) {
-      capacity_ *= 2;
-    }
-    for (size_type i = 0; i < n; ++i) {
-      emplace_back(value);
-    }
+    resize(n, value);
   }
 
   // === Destructor ===
@@ -77,13 +85,9 @@ public:
   {
     clear();
     deallocate();
-    size_ = v.size_;
-    capacity_ = 1;
-    while (capacity_ < size_) {
-      capacity_ *= 2;
-    }
-    first_ = allocate(capacity_);
-    for (size_type i = 0; i < size_; ++i) {
+    resize(v.size());
+    first_ = allocate(capacity());
+    for (size_type i = 0; i < size(); ++i) {
       construct(first_ + i, *(v.first_ + i));
     }
   }
@@ -96,117 +100,113 @@ public:
     return *this;
   }
 
-  // === Size ===
-  size_type capacity() const { return capacity_; }
-  size_type size() const { return size_; }
-  bool empty() const { return size_ == 0; }
+  // === Iterator ===
+  iterator begin() const noexcept { return first_; }
+  const_iterator cbegin() const noexcept { return first_; }
+  reverse_iterator rbegin() noexcept { return reverse_iterator(last_); }
+  const_iterator crbegin() const noexcept { return const_reverse_iterator(last_); }
+  iterator end() const noexcept { return last_; }
+  const_iterator end() const noexcept { return last_; }
+  const_iterator cend() const noexcept { return last_; }
+  reverse_iterator rend() noexcept { return reverse_iterator(first_); }
+  const_reverse_iterator rend() const noexcept { return const_reverse_iterator(first_); }
+  const_reverse_iterator crend() const noexcept { return const_reverse_iterator(first_); }
 
-  void resize(size_type s)
+  // === Size ===
+  size_type capacity() const noexcept { return reserved_last_ - first_; }
+  size_type size() const { return end() - begin();} 
+  bool empty() const { return begin()== end(); }
+
+  void reserve(size_type sz) {
+    if (sz <= capacity()) {
+      return;
+    }
+    auto ptr = allocate(sz);
+
+    auto old_first = first_;
+    auto old_last = last_;
+    auto old_capacity = capacity();
+
+    first_= ptr;
+    last_ = first_;
+    reserved_last_ = first_ + sz;
+    
+    for (auto old_iter = old_first; old_iter != old_last; ++old_iter, ++last_) {
+      construct(last_, std::move(*old_iter));
+    }
+
+    for (auto riter = reverse_iterator(old_last), rend = reverse_iterator(old_first); riter != rend; ++riter)
+    {
+      destroy(&*riter);
+    }
+
+    traits::deallocate(alloc_, old_first, old_capacity);
+  }
+
+  void resize(size_type sz)
   {
-    if (s < size_) {
-      auto diff = size_ - s;
-      for (size_type i = size_; i < size_; --i) {
-        destroy(first_ + i);
+    if (sz < size()) {
+      auto diff = size() - sz;
+      destroy_until(rbegin() + diff);
+      last_ = first_ + sz;
+    } else if (sz > size()){
+      reserve(sz);
+      for (; last_ != reserved_last_; ++last_) {
+        construct(last_);
       }
     }
   }
 
-  void reserve(size_type s)
-  {
-    if (capacity_ < s) {
-      pointer ptr = allocate(s);
-      pointer old_first = first_;
-      size_type old_capacity = capacity_;
-      first_ = ptr;
-      capacity_ = 1;
+  void resize(size_type sz, const_reference value) {
+    if (sz < size()) {
+      auto diff = size() - sz;
+      destroy_until(rbegin() + diff);
+      last_ = first_ + sz;
+    } else if (sz > size()){
+      reserve(sz);
+      for (; last_ != reserved_last_; ++last_) {
+        construct(last_, value);
+      }
     }
   }
 
   // === Access to the elements ===
   reference operator[](const size_type i) { return first_[i]; }
-  reference at(const size_type i) { return first_[i]; }
+  reference at(const size_type i)
+  {
+    if (i >= size()) {
+      throw std::out_of_range("Index %d is out of range.", i);
+    }
+    return first_[i];
+  }
+  reference front() {
+    return first_;
+  }
+  reference back() { return last_ - 1;}
   pointer data() { return first_; }
 
   // === Update container ===
   template <class... Args>
   void emplace_back(Args &&... args)
   {
-    if (size_ == capacity_) {
+    if (size() + 1 > capacity()) {
+      size_type c = size();
+      if (c == 0) {
+        c = 1;
+      } else {
+        c *= 2;
+      }
+      reserve(c);
     }
-    construct(first_ + size_, std::forward<Args>(args)...);
-    size_++;
+    construct(last_, std::forward<Args>(args)...);
+    ++last_;
   }
 
   void push_back(const value_type value) { emplace_back(value); }
 
-  void clear()
-  {
-    for (size_type i = 0; i < size_; ++i) {
-      destroy(first_ + i);
-    }
-  }
+  void clear() { destroy_until(rend()); }
 
-public:
-  class iterator
-  {
-    using difference_type = int;
-    using value_type = vector::value_type;
-    using pointer = vector::pointer;
-    using reference = vector::reference;
-    using iterator_category = std::random_access_iterator_tag;
-
-  private:
-    value_type * ptr_;
-
-  public:
-    iterator() noexcept : ptr_(nullptr) {}
-    iterator(vector * base, difference_type index) noexcept : ptr_(base->first_ + index) {}
-    iterator(const iterator & i) : ptr_(i.ptr_) {}
-
-    iterator & operator++()
-    {
-      ptr_++;
-      return *this;
-    }
-
-    iterator operator++(int)
-    {
-      iterator ret = *this;
-      ptr_++;
-      return ret;
-    }
-
-    iterator operator+(const difference_type i) const { return iterator(*this) += i; }
-
-    iterator & operator+(const difference_type i)
-    {
-      ptr_ += i;
-      return *this;
-    }
-
-    iterator & operator--()
-    {
-      ptr_--;
-      return *this;
-    }
-
-    iterator operator--(int)
-    {
-      iterator ret = *this;
-      ptr_--;
-      return ret;
-    }
-
-    iterator operator-(const difference_type i) const { return iterator(*this) -= i; }
-
-    iterator & operator-(const difference_type i)
-    {
-      ptr_ -= i;
-      return *this;
-    }
-
-  };  // class iterator
-};    // class vector
+};  // class vector
 }  // namespace mylib
 
 #endif  // MYLIB_VECTOR_HPP_

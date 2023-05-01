@@ -4,7 +4,8 @@
 
 int main()
 {
-  mylib::vector<int> v(10, 1);
+  mylib::vector<int> v;
   std::cout << "Capacity: " << v.capacity() << std::endl;
   std::cout << "Size: " << v.size() << std::endl;
+  std::cout << "begin: " << v.begin() << std::endl;
 }
