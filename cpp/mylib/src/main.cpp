@@ -1,9 +1,10 @@
+#include "allocator.hpp"
 #include "vector.hpp"
 
 #include <iostream>
 
-template <typename T>
-void debug(const mylib::vector<T> & v)
+template <typename T, class Alloc>
+void debug(const mylib::vector<T, Alloc> & v)
 {
   std::cout << "(";
   for (size_t i = 0; i < v.size(); ++i) {
@@ -17,11 +18,11 @@ void debug(const mylib::vector<T> & v)
 
 int main()
 {
-  mylib::vector<int> v(10);
+  mylib::vector<int, mylib::allocator<int>> v(10);
 
   debug(v);
 
-  mylib::vector<int> v2;
+  mylib::vector<int, mylib::allocator<int>> v2;
   v2 = v;
 
   debug(v2);

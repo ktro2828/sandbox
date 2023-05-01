@@ -4,33 +4,41 @@
 #include <cstddef>
 #include <cstdlib>
 
-namespace mylib {
+namespace mylib
+{
 template <class T>
 class allocator
 {
-private:
 public:
-allocator() noexcept {}
-allocator(const allocator &) noexcept {}
+  using value_type = T;
+  using size_type = std::size_t;
+  using pointer = T *;
+  using const_pointer = const T *;
 
-template <class U>
-allocator(const allocator<U> &) noexcept {}
+public:
+  allocator() noexcept {}
+  allocator(const allocator &) noexcept {}
 
-~allocator() {}
+  template <class U>
+  allocator(const allocator<U> &) noexcept
+  {
+  }
 
-allocator& operator=(const allocator&) = default;
+  ~allocator() {}
 
-[[nodiscard]] T* allocate(std::size_t n)
-{
-    return reinterpret_cast<T*>(std::malloc(sizeof(T) * n));
-}
+  allocator & operator=(const allocator &) = default;
 
-void deallocate(T *p, size_t n)
-{
+  [[nodiscard]] pointer allocate(size_type n)
+  {
+    return reinterpret_cast<T *>(std::malloc(sizeof(T) * n));
+  }
+
+  void deallocate(pointer p, size_type n)
+  {
     static_cast<void>(n);
     std::free(p);
-}
+  }
 
-}; // class  allocator
-} // namespace mylib
-#endif // MYLIB_ALLOCATOR_HPP_
+};  // class  allocator
+}  // namespace mylib
+#endif  // MYLIB_ALLOCATOR_HPP_

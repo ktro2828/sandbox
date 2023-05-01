@@ -32,12 +32,15 @@ namespace mylib {
 
 ### Member functions
 
+- :heavy_check_mark: : Completed
+- :white_check_mark: : TODO update
+
 #### Construct/Deconstruct
 | Name            | Description         | Implementation     |
 |:----------------|:--------------------|:------------------:|
-| `(constructor)` | Constructor         | :heavy_check_mark: |
+| `(constructor)` | Constructor         | :white_check_mark: |
 | `(destructor)`  | Destructor          | :heavy_check_mark: |
-| `operator=`     | Assignment operator | :heavy_check_mark: |
+| `operator=`     | Assignment operator | :white_check_mark: |
 
 #### Iterator
 
@@ -59,9 +62,9 @@ namespace mylib {
 | `size`          | Returns the number of elements                                                         | :heavy_check_mark: |
 | `capacity`      | Returns the number of maximum elements that can be stored without re-allocating memory | :heavy_check_mark: |
 | `empty`         | Whether container is empty                                                             | :heavy_check_mark: |
-| `resize`        | Resize the number of elemets                                                           | []                 |
-| `reserve`       | Update capacity                                                                        | []                 |
-| `shrink_to_fit` | Shrink capacity to the size                                                            | []                   |
+| `resize`        | Resize the number of elemets                                                           | :white_check_mark: |
+| `reserve`       | Update capacity                                                                        | :white_check_mark: |
+| `shrink_to_fit` | Shrink capacity to the size                                                            | []                 |
 
 #### Access to the element
 
@@ -77,8 +80,8 @@ namespace mylib {
 
 | Name           | Description                        | Implementation     |
 |:---------------|:-----------------------------------|:------------------:|
-| `push_back`    | Add an element to the last         | []                 |
-| `emplace_back` | Create object to the last directly | []                 |
+| `push_back`    | Add an element to the last         | :white_check_mark: |
+| `emplace_back` | Create object to the last directly | :white_check_mark: |
 | `clear`        | Clear all elements                 | :heavy_check_mark: |
 
 ## `mylib::allocator`
@@ -90,8 +93,17 @@ namespace mylib {
 }
 ```
 
+### Member types
+
+| Name            | Description   |
+|:----------------|:--------------|
+| `value_type`    | `T`           |
+| `size_type`     | `std::size_t` |
+| `pointer`       | `T*`          |
+| `const_pointer` | `const T*`    |
+
 ### Member functions
-| Name         | Description |
-| :----------- | :---------- |
-| `allocate`   | WIP         |
-| `deallocate` | WIP         |
+| Name         | Description       | Implementation     |
+|:-------------|:------------------|:------------------:|
+| `allocate`   | Allocate memory   | :heavy_check_mark: |
+| `deallocate` | Deallocate memory | :heavy_check_mark: |
