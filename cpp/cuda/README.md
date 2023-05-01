@@ -1,4 +1,7 @@
 # CUDAプログラミング
+
+see [ktro2828/trt-sandbox](https://github.com/ktro2828/trt-sandbox.git).
+
 ## Kernels
 CUDA C++は異なるN個のCUDAスレッドでN回の並行処理をC++関数(=カーネル)で定義できる．
 CUDAはC++(C)に以下の２つの拡張を加えてある．
