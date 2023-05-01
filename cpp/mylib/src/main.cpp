@@ -46,4 +46,7 @@ int main()
   debug(v3);
   v3.resize(12);
   debug(v3);
+
+  mylib::vector<int> v4 = {1, 2, 3, 4};
+  debug(v4);
 }

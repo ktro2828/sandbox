@@ -73,6 +73,22 @@ public:
     resize(n, value);
   }
 
+  template <typename InputIter>
+  vector(InputIter first, InputIter last, const allocator_type & alloc = allocator_type())
+  : alloc_(alloc)
+  {
+    size_type sz = std::distance(first, last);
+    reserve(sz);
+    for (auto iter = first; iter != last; ++iter) {
+      push_back(*iter);
+    }
+  }
+
+  vector(std::initializer_list<value_type> init, const allocator_type & alloc = allocator_type())
+  : vector(std::begin(init), std::end(init), alloc)
+  {
+  }
+
   // === Destructor ===
   ~vector()
   {
