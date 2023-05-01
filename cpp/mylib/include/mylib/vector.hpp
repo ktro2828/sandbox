@@ -83,19 +83,20 @@ public:
   vector & operator=(const vector & v)
   {
     clear();
-    deallocate();
     resize(v.size());
-    arr_ = allocate(capacity());
     for (size_type i = 0; i < size(); ++i) {
       construct(begin() + i, *(v.begin() + i));
     }
+    return *this;
   }
 
   vector & operator=(vector && v)
   {
     clear();
-    deallocate();
-    *this = std::move(v);
+    resize(v.size());
+    for (size_type i = 0; i < size(); ++i) {
+      construct(begin() + i, std::move(*(v.begin() + i)));
+    }
     return *this;
   }
 
@@ -125,7 +126,6 @@ public:
     if (sz < size()) {
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
-      length_ = sz;
     } else if (sz > size()) {
       for (auto iter = begin(); iter != end(); ++iter) {
         construct(iter);

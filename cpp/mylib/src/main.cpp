@@ -12,18 +12,28 @@ void debug(const mylib::vector<T> & v)
       std::cout << ", ";
     }
   }
-  std::cout << ")";
+  std::cout << ")" << std::endl;
 }
 
 int main()
 {
   mylib::vector<int> v(10);
+
+  debug(v);
+
+  mylib::vector<int> v2;
+  v2 = v;
+
+  debug(v2);
+
   std::cout << "Capacity: " << v.capacity() << std::endl;
   std::cout << "Size: " << v.size() << std::endl;
   std::cout << "begin: " << v.begin() << std::endl;
+  std::cout << "end: " << v.end() << std::endl;
+  std::cout << v.end() - v.begin() << std::endl;
   for (int i = 0; i < 10; ++i) {
     v.emplace_back(i);
   }
 
-  debug<int>(v);
+  debug(v);
 }
