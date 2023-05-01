@@ -1,6 +1,7 @@
 #ifndef MYLIB_VECTOR_HPP_
 #define MYLIB_VECTOR_HPP_
 
+#include <cstddef>
 #include <iterator>
 #include <memory>
 #include <stdexcept>
@@ -13,7 +14,7 @@ class vector
 public:
   using traits = std::allocator_traits<Alloc>;
   using value_type = T;
-  using size_type = unsigned int;
+  using size_type = std::size_t;
   using pointer = typename traits::pointer;
   using const_pointer = typename traits::const_pointer;
   using reference = T &;
@@ -21,8 +22,8 @@ public:
   // allocator
   using allocator_type = Alloc;
   // iterator
-  using iterator = T*;
-  using const_iterator = const T*;
+  using iterator = T *;
+  using const_iterator = const T *;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -30,7 +31,7 @@ private:
   pointer first_;
   pointer last_;
   pointer reserved_last_;
-  Alloc alloc_;
+  allocator_type alloc_;
 
   // === Validation ===
   static_assert(
@@ -57,9 +58,9 @@ private:
 
 public:
   // === Constructor ===
-  vector() : vector(allocator_type()) {}
-
   explicit vector(const allocator_type & alloc) noexcept : alloc_(alloc) {}
+
+  vector() : vector(allocator_type()) {}
 
   explicit vector(size_type n, const allocator_type & alloc = allocator_type()) : alloc_(alloc)
   {
@@ -101,11 +102,12 @@ public:
   }
 
   // === Iterator ===
-  iterator begin() const noexcept { return first_; }
+  iterator begin() noexcept { return first_; }
+  const_iterator begin() const noexcept { return first_; }
   const_iterator cbegin() const noexcept { return first_; }
   reverse_iterator rbegin() noexcept { return reverse_iterator(last_); }
   const_iterator crbegin() const noexcept { return const_reverse_iterator(last_); }
-  iterator end() const noexcept { return last_; }
+  iterator end() noexcept { return last_; }
   const_iterator end() const noexcept { return last_; }
   const_iterator cend() const noexcept { return last_; }
   reverse_iterator rend() noexcept { return reverse_iterator(first_); }
@@ -114,10 +116,11 @@ public:
 
   // === Size ===
   size_type capacity() const noexcept { return reserved_last_ - first_; }
-  size_type size() const { return end() - begin();} 
-  bool empty() const { return begin()== end(); }
+  size_type size() const { return end() - begin(); }
+  bool empty() const { return begin() == end(); }
 
-  void reserve(size_type sz) {
+  void reserve(size_type sz)
+  {
     if (sz <= capacity()) {
       return;
     }
@@ -127,16 +130,16 @@ public:
     auto old_last = last_;
     auto old_capacity = capacity();
 
-    first_= ptr;
+    first_ = ptr;
     last_ = first_;
     reserved_last_ = first_ + sz;
-    
+
     for (auto old_iter = old_first; old_iter != old_last; ++old_iter, ++last_) {
       construct(last_, std::move(*old_iter));
     }
 
-    for (auto riter = reverse_iterator(old_last), rend = reverse_iterator(old_first); riter != rend; ++riter)
-    {
+    for (auto riter = reverse_iterator(old_last), rend = reverse_iterator(old_first); riter != rend;
+         ++riter) {
       destroy(&*riter);
     }
 
@@ -149,7 +152,7 @@ public:
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
       last_ = first_ + sz;
-    } else if (sz > size()){
+    } else if (sz > size()) {
       reserve(sz);
       for (; last_ != reserved_last_; ++last_) {
         construct(last_);
@@ -157,12 +160,13 @@ public:
     }
   }
 
-  void resize(size_type sz, const_reference value) {
+  void resize(size_type sz, const_reference value)
+  {
     if (sz < size()) {
       auto diff = size() - sz;
       destroy_until(rbegin() + diff);
       last_ = first_ + sz;
-    } else if (sz > size()){
+    } else if (sz > size()) {
       reserve(sz);
       for (; last_ != reserved_last_; ++last_) {
         construct(last_, value);
@@ -179,10 +183,8 @@ public:
     }
     return first_[i];
   }
-  reference front() {
-    return first_;
-  }
-  reference back() { return last_ - 1;}
+  reference front() { return first_; }
+  reference back() { return last_ - 1; }
   pointer data() { return first_; }
 
   // === Update container ===
