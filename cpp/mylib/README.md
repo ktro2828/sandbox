@@ -1,5 +1,7 @@
 # mylib
 
+Re-implementation of standard-library.
+
 ## `mylib::vector`
 
 ```cpp
@@ -34,6 +36,7 @@ namespace mylib {
 
 - :heavy_check_mark: : Completed
 - :white_check_mark: : TODO update
+- :x: : Not implemented yet
 
 #### Construct/Deconstruct
 | Name            | Description         | Implementation     |
@@ -64,7 +67,7 @@ namespace mylib {
 | `empty`         | Whether container is empty                                                             | :heavy_check_mark: |
 | `resize`        | Resize the number of elemets                                                           | :white_check_mark: |
 | `reserve`       | Update capacity                                                                        | :white_check_mark: |
-| `shrink_to_fit` | Shrink capacity to the size                                                            | []                 |
+| `shrink_to_fit` | Shrink capacity to the size                                                            | :x:                |
 
 #### Access to the element
 
