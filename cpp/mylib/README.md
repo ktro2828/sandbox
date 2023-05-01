@@ -16,11 +16,11 @@ namespace mylib {
 ### Member functions
 
 #### Construct/Deconstruct
-| Name            | Description         | Implementation |
-|:----------------|:--------------------|:--------------:|
-| `(constructor)` | Constructor         | []             |
-| `(destructor)`  | Destructor          | []             |
-| `operator=`     | Assignment operator | []             |
+| Name            | Description         | Implementation     |
+|:----------------|:--------------------|:------------------:|
+| `(constructor)` | Constructor         | :heavy_check_mark: |
+| `(destructor)`  | Destructor          | :heavy_check_mark: |
+| `operator=`     | Assignment operator | :heavy_check_mark: |
 
 #### Iterator
 
@@ -31,28 +31,29 @@ namespace mylib {
 
 #### Size
 
-| Name       | Description                                                                            | Implementation |
-|:-----------|:---------------------------------------------------------------------------------------|:--------------:|
-| `size`     | Returns the number of elements                                                         | []             |
-| `resize`   | Resize the number of elemets                                                           | []             |
-| `capacity` | Returns the number of maximum elements that can be stored without re-allocating memory | []             |
-| `empty`    | Whether container is empty                                                             | []             |
-| `reserve`  | Update capacity                                                                        | []             |
+| Name       | Description                                                                            | Implementation     |
+|:-----------|:---------------------------------------------------------------------------------------|:------------------:|
+| `size`     | Returns the number of elements                                                         | :heavy_check_mark: |
+| `resize`   | Resize the number of elemets                                                           | []                 |
+| `capacity` | Returns the number of maximum elements that can be stored without re-allocating memory | :heavy_check_mark: |
+| `empty`    | Whether container is empty                                                             | :heavy_check_mark: |
+| `reserve`  | Update capacity                                                                        | []                 |
 
 #### Access to the element
 
-| Name         | Description                                            | Implementation |
-|:-------------|:-------------------------------------------------------|:--------------:|
-| `operator[]` | Access to the element                                  | []             |
-| `at`         | Access to the element                                  | []             |
-| `data`       | Returns the reference that points to the first element | []             |
+| Name         | Description                                            | Implementation     |
+|:-------------|:-------------------------------------------------------|:------------------:|
+| `operator[]` | Access to the element                                  | :heavy_check_mark: |
+| `at`         | Access to the element                                  | :heavy_check_mark: |
+| `data`       | Returns the reference that points to the first element | :heavy_check_mark: |
 
 #### Update container
 
-| Name           | Description                        | Implementation |
-|:---------------|:-----------------------------------|:--------------:|
-| `push_back`    | Add an element to the last         | []             |
-| `emplace_back` | Create object to the last directly | []             |
+| Name           | Description                        | Implementation     |
+|:---------------|:-----------------------------------|:------------------:|
+| `push_back`    | Add an element to the last         | []                 |
+| `emplace_back` | Create object to the last directly | []                 |
+| `clear`        | Clear all elements                 | :heavy_check_mark: |
 
 ## `mylib::allocator`
 

@@ -23,7 +23,7 @@ private:
   using pointer = typename traits::pointer;
   using const_pointer = typename traits::const_pointer;
 
-  // Helper functions
+  // === Helper functions ===
   pointer allocate(size_type n) { return traits::allocate(alloc_, n); }
   void deallocate() { traits::deallocate(alloc_, first_, capacity_); }
   void construct(pointer ptr) { traits::construct(alloc_, ptr); }
@@ -40,7 +40,9 @@ private:
   Alloc alloc_;
 
 public:
+  // === Constructor ===
   vector() : vector(allocator_type()) {}
+
   explicit vector(const allocator_type & alloc) noexcept : alloc_(alloc) {}
 
   explicit vector(size_type n, const allocator_type & alloc = allocator_type()) : alloc_(alloc)
@@ -58,33 +60,19 @@ public:
     while (capacity_ < n) {
       capacity_ *= 2;
     }
-
     for (size_type i = 0; i < n; ++i) {
       emplace_back(value);
     }
   }
 
-  template <class... Args>
-  void emplace_back(Args &&... args)
-  {
-    if (size_ == capacity_) {
-    }
-    construct(first_ + size_, std::forward<Args>(args)...);
-    size_++;
-  }
-
-  /**
-     @brief Deconstruct object
-   */
+  // === Destructor ===
   ~vector()
   {
     clear();
     deallocate();
   }
 
-  /**
-     @brief Copy constructor
-   */
+  // === Copy-constructor ==
   vector & operator=(const vector & v)
   {
     clear();
@@ -100,15 +88,27 @@ public:
     }
   }
 
-  /**
-     @brief Copy constructor by move
-   */
   vector & operator=(vector && v)
   {
     clear();
     deallocate();
     *this = std::move(v);
     return *this;
+  }
+
+  // === Size ===
+  size_type capacity() const { return capacity_; }
+  size_type size() const { return size_; }
+  bool empty() const { return size_ == 0; }
+
+  void resize(size_type s)
+  {
+    if (s < size_) {
+      auto diff = size_ - s;
+      for (size_type i = size_; i < size_; --i) {
+        destroy(first_ + i);
+      }
+    }
   }
 
   void reserve(size_type s)
@@ -122,31 +122,29 @@ public:
     }
   }
 
-  /**
-     @brief Resize vector
-   */
-  void resize(size_type s)
+  // === Access to the elements ===
+  reference operator[](const size_type i) { return first_[i]; }
+  reference at(const size_type i) { return first_[i]; }
+  pointer data() { return first_; }
+
+  // === Update container ===
+  template <class... Args>
+  void emplace_back(Args &&... args)
   {
-    if (s < size_) {
-      auto diff = size_ - s;
-      for (size_type i = size_; i < size_; --i) {
-        destroy(first_ + i);
-      }
+    if (size_ == capacity_) {
     }
+    construct(first_ + size_, std::forward<Args>(args)...);
+    size_++;
   }
 
-  /**
-     @brief Clear data
-   */
+  void push_back(const value_type value) { emplace_back(value); }
+
   void clear()
   {
     for (size_type i = 0; i < size_; ++i) {
       destroy(first_ + i);
     }
   }
-
-  size_type capacity() const { return capacity_; }
-  size_type size() const { return size_; }
 
 public:
   class iterator
