@@ -79,3 +79,14 @@ if let Some(i @ 0...10) = n {
     println!("{}", i);
 }
 ```
+
+## `isize` vs `usize`
+
+PCのCPUアーキテクチャにあったビット分のサイズを取る整数型。
+ - 32bit
+   - `isize` : `i32`
+   - `usize`: `u32`
+
+- 64bit
+ - `isize` : `i64`
+ - `usize` : `u64`
