@@ -1,7 +1,7 @@
 {
     "configurations": [
-    {
-        "browse": {
+        {
+            "browse": {
                 "databaseFilename": "${default}"
             },
             "includePath": [
@@ -17,8 +17,8 @@
             "compilerPath": "/usr/lib/llvm-14/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "name": "TRT-sandbox"
-    }
+            "name": "sandbox"
+        }
     ],
     "version": 4
 }
