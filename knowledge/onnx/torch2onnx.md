@@ -91,9 +91,35 @@ RuntimeError: ONNX export failed: Couldn't export operator foo
 2. それらのオペレータを変換するシンボリック関数を作成する
 3. PyTorchにコントリビュートする
 
-### [Symbolic関数](https://pytorch.org/docs/stable/onnx_torchscript.html#onnx-exporter-internals)
+### [ONNX exporter internals](https://pytorch.org/docs/stable/onnx_torchscript.html#onnx-exporter-internals)
 
-PyTorch内で定義されたオペレータをONNXオペレータの構成に分解する関数。
+シンボリック関数: PyTorch内で定義されたオペレータをONNXオペレータの構成に分解する関数。
+エクスポートの際、`TorchScript`のグラフ内では各ノード(PyTorchのオペレータを内包)をトポロジカルソートした順序で巡回する。
+巡回されるノードでは、エクスポーターはそのオペレータに対する登録されたシンボリック関数を検索する。
+`foo`という名前のオペレータに対するシンボリック関数の例は以下のようになる。
+
+```python
+def foo(g: Graph, input_0: torch._C.Value, input_1: torch._C.value) -> Union[None, torch._C.Value, List[torch._C.Value]]:
+  """
+  ノードグラフ(g)が`g.op()`を呼び出した際に、fooオペレータを追加する。
+
+  Args:
+    g (Graph): graph to write the ONNX representation into.
+    input_0 (Value): value representing the variables which contain
+        the first input for this operator.
+    input_1 (Value): value representing the variables which contain
+        the second input for this operator.
+
+  Returns:
+    A Value or List of Values specifying the ONNX nodes that compute something
+    equivalent to the original PyTorch operator with the given inputs.
+
+    None if it cannot be converted to ONNX.
+  """
+  ...
+```
+
+`torch._C`型はC++で[`ir.h`](https://github.com/pytorch/pytorch/blob/main/torch/csrc/jit/ir/ir.h)内に書かれたもののPythonラッパー。
 
 ### [Atenオペレータ](https://pytorch.org/docs/stable/onnx_torchscript.html#aten-operators)
 
