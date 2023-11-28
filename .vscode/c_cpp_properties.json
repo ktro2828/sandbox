@@ -11,7 +11,8 @@
                 "${workspaceFolder}/src/**",
                 "/usr/include/**",
                 "/usr/local/include/**",
-                "/usr/local/cuda/include/**"
+                "/usr/local/cuda/include/**",
+                "${workspaceFolder}/opencv/**",
             ],
             "intelliSenseMode": "linux-gcc-x64",
             "compilerPath": "/usr/lib/llvm-14/bin/clang",
