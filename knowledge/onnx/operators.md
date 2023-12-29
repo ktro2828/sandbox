@@ -27,3 +27,12 @@ indices = [[4], [3], [1], [7]]
 updates = [9, 10, 11, 12]
 output  = [1, 11, 3, 10, 9, 6, 7, 12]
 ```
+
+## [Adding support for operators](https://glaringlee.github.io/onnx.html#adding-support-for-operators)
+
+### ATen operators
+
+追加したいonnxオペレータがATenオペレータの場合(=`torch/csrc/autograd/generated/VariableType.h`に定義されている)、`torch/onnx/symbolic_opset<version>.py`に追加する。
+追加する際は、以下に従う。
+
+## Non-ATen operators

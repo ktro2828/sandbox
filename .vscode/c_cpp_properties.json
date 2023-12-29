@@ -12,7 +12,8 @@
                 "/usr/include/**",
                 "/usr/local/include/**",
                 "/usr/local/cuda/include/**",
-                "${workspaceFolder}/opencv/**",
+                "${workspaceFolder}/cpp/opencv/**",
+                "${workspaceFolder}/cpp/boost/**"
             ],
             "intelliSenseMode": "linux-gcc-x64",
             "compilerPath": "/usr/lib/llvm-14/bin/clang",
