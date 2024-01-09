@@ -1,5 +1,13 @@
 # TCP/IP
 
+## Glossary
+
+### ネットマスク
+
+IPアドレスは、「ネットワークアドレス」(=サブネット)と「ホストアドレス」の２つの部分に分解できる。このとき、ネットワークアドレスをフィルタするためのマスク用の32bit数値を「ネットマスク」(=サブネットマスク)という。
+
+<img src="https://teltonika-networks.com/cdn/extras/18115/netmask-in-article-3-840xAuto.webp">
+
 ## Setup
 
 ```shell
