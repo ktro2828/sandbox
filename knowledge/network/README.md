@@ -6,7 +6,11 @@
 
 IPアドレスは、「ネットワークアドレス」(=サブネット)と「ホストアドレス」の２つの部分に分解できる。このとき、ネットワークアドレスをフィルタするためのマスク用の32bit数値を「ネットマスク」(=サブネットマスク)という。
 
+- FYI
+  - [「ネットマスク」とはなにか - ネットワーク・サブネットに関するガイド -](https://teltonika-networks.com/cdn/extras/18115/netmask-in-article-3-840xAuto.webp)
+
 <img src="https://teltonika-networks.com/cdn/extras/18115/netmask-in-article-3-840xAuto.webp">
+
 
 ## Setup
 
