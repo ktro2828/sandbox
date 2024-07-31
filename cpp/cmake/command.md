@@ -42,7 +42,7 @@
 ## [`include_directories`](https://cmake.org/cmake/help/latest/command/include_directories.html)
 
 指定されたディレクトリをコンパイラがインクルードファイルを検索するためのパス(=`${INCLUDE_DIRECTORIES}`)に追加する。
-相対パスは`${CMAKE_CURRENS_SOURCE_DIR}`からの相対パスとして解釈される。
+相対パスは`${CMAKE_CURRENT_SOURCE_DIR}`からの相対パスとして解釈される。
 
 `include_directories([AFTER|BEFORE] [SYSTEM] <dir1> [<dir2>...])`
 
@@ -59,6 +59,20 @@
 ターゲットに対するインクルードパスを追加する。`<target>`は事前に`add_executable()`や`add_library()`で宣言しておく必要がある。
 
 `target_include_directories(<target> [SYSTEM] [AFTER|BEFORE] <INTERFACE|PUBLIC|PRIVATE> [items1...]) [<INTERFACE|PUBLIC|PRIVATE> [items2...]...])`
+
+> [!NOTE]
+> ビルド時とインストール時で異なるインクルードディレクトリを設定することが一般的で、ビルド時には`$<BUILD_INTERFACE:...>`でソースディレクトリ内のヘッダーファイルを参照し、インストール時には`$<INSTALL_INTERFACE:...>`でインストール先のディレクトリを参照する。
+```cmake
+target_include_directories(my_library PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+```
+
+- `$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>`
+  - ビルド時には、`${CMAKE_CURRENT_SOURCE_DIR}/include`ディレクトリをインクルードディレクトリとして使用する。
+- `$<INSTALL_INTERFACE:include>`
+  - インストール時には、`include`ディレクトリをインクルードディレクトリとして使用する。
 
 ## [`install`](https://cmake.org/cmake/help/latest/command/install.html)
 
